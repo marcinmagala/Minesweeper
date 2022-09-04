@@ -7,14 +7,23 @@
     <title>Minesweeper</title>
 
     <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
+    <script defer src="script.js"></script>
   </head>
   <body>
     <div class="app">
       <header>Title</header>
-      <div class="board">
-        <div>asdaas</div>
-      </div>
+      <div class="board"></div>
     </div>
   </body>
 </html>
+
+<!-- 
+  1. Na początku gry gracz definiuje w formularzu jak duża ma być plansza i ile ma być na niej min.
+  1a. Losowanie położenia min.
+  2. Plansza i miny zostają naniesione na stronę.
+  3. Po kliknięciu na minę gra się kończy.
+  4. Po kliknięciu na pole sąsiadujące z miną na polu pokazuje sie liczba min na polach z nią sąsiadujących (te liczby mogłyby się generować już w momencie renderowania planszy i być jako atrybut danego pola).
+  5. Po kliknięciu na miejsce, które nie sąsiaduje z miną ani nie jest miną miejsce zostaje odsłonięte oraz odsłonięte zostają wszystkie miejsca na ktorych nie znajduje się mina i sąsiadują z miejsce odsłoniętym - rekurencja.
+  6. Po naciśnięciu na pole prawym przycieksiem myszki można oznaczyć pole jako pole z miną.
+  7. Licznik oznaczonych min.
+ -->
