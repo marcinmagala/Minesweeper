@@ -34,28 +34,16 @@ for (let i = 0; i < boxList.length; i++) {
     box.setAttribute('row', `${i}`);
     box.setAttribute('column', `${j}`);
     box.setAttribute('coords', `${i},${j}`);
+    box.setAttribute('mine', false);
 
-    // for (let l = 0; l < mineCoords.length; l++) {
-    //   // console.log(mineCoords[l]);
-    //   // console.log([i, j]);
-    //   if (mineCoords[l][0] === i && mineCoords[l][1] === j) {
-    //     box.setAttribute('mine', true);
-    //   } else {
-    //     box.setAttribute('mine', false);
-    //   }
-    // }
+    for (let l = 0; l < mineCoords.length; l++) {
+      if (mineCoords[l][0] === i && mineCoords[l][1] === j) {
+        box.setAttribute('mine', true);
+      }
+    }
 
     board.appendChild(box);
   }
-}
-
-for (let l = 0; l < mineCoords.length; l++) {
-  console.log(mineCoords[l][0] === l && mineCoords[l][0] === 3);
-  // if (mineCoords[l][0] === i && mineCoords[l][1] === j) {
-  //   box.setAttribute('mine', true);
-  // } else {
-  //   box.setAttribute('mine', false);
-  // }
 }
 
 // Lewy przycisk myszy na dane pole - odsłonięcie pola
