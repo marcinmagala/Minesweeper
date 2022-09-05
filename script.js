@@ -26,6 +26,8 @@ const setMine = function () {
 
 setMine();
 
+const fieldWithNeighbours = new Map();
+
 const buildBoard = function () {
   for (let i = 0; i < boxList.length; i++) {
     for (let j = 0; j < boxList[i].length; j++) {
@@ -39,10 +41,32 @@ const buildBoard = function () {
       // box.setAttribute('mine', false);
       box.dataset.mine = false;
 
+      fieldWithNeighbours.set(`${i}${j}`, [
+        [i - 1, j - 1],
+        [i - 1, j],
+        [i - 1, j + 1],
+        [i, j - 1],
+        [i, j + 1],
+        [i + 1, j - 1],
+        [i + 1, j],
+        [i + 1, j + 1],
+      ]);
       for (let l = 0; l < mineCoords.length; l++) {
         if (mineCoords[l][0] === i && mineCoords[l][1] === j) {
           // box.setAttribute('mine', true);
           box.dataset.mine = true;
+          fieldWithNeighbours.set(`${i}${j}`, [
+            [i - 1, j - 1],
+            [i - 1, j],
+            [i - 1, j + 1],
+            [i, j - 1],
+            [i, j + 1],
+            [i + 1, j - 1],
+            [i + 1, j],
+            [i + 1, j + 1],
+            true,
+          ]);
+          // fieldWithNeighbours.set(`${i}${j}`, { mine: true });
         }
       }
 
@@ -52,6 +76,10 @@ const buildBoard = function () {
 };
 
 buildBoard();
+
+console.log(fieldWithNeighbours);
+
+// Tworzenie sąsiadów
 
 // Lewy przycisk myszy na dane pole - odsłonięcie pola
 board.addEventListener('click', function (e) {
@@ -70,5 +98,6 @@ board.addEventListener('click', function (e) {
 // Prawy przycisk myszy na dane pole - oznaczenie pola z miną
 board.addEventListener('contextmenu', function (e) {
   e.preventDefault();
+  e.target.style.backgroundColor = 'violet';
   console.log(e.target);
 });
