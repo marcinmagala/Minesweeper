@@ -1,6 +1,8 @@
 'use strict';
 
 const board = document.querySelector('.board');
+const win = document.querySelector('.win');
+const lose = document.querySelector('.lose');
 
 // Tworzenie planszy
 const boxList = new Array(10);
@@ -30,9 +32,24 @@ const test = function () {
   console.log('test');
 };
 
-const fieldWithNeighbours = new Map();
-// key === coords from clicked field
-// value === Array(0-8 -> coords of neighbours of such field, 9 -> mine exist (boolean), 10 -> field clicked by user (boolean) )
+// objekt zamiast mapy
+// const objekt = {
+//   '00': [[1, 2], [3, 4], true, false],
+//   '01': [[5, 6], [7, 8], true, false],
+// };
+
+// console.log(objekt);
+
+// console.log((objekt['00'][3] = true));
+
+// objekt['02'] = [[1, 2], [5, 4], true, false];
+
+// console.log(objekt['02']);
+// console.log(objekt);
+
+const fieldWithNeighbours = {};
+// key === coords (string) from clicked field
+// value === Array(0-7 -> coords of neighbours of such field (string), 8 -> mine exist (boolean), 9 -> field clicked by user (boolean), 10 -> marked field as field with mine by user (boolean) )
 
 const buildBoard = function () {
   for (let i = 0; i < boxList.length; i++) {
@@ -44,33 +61,23 @@ const buildBoard = function () {
 
       box.dataset.coords = `${i}${j}`;
 
-      fieldWithNeighbours.set(`${i}${j}`, [
-        [`${i - 1}${j - 1}`],
-        [`${i - 1}${j}`],
-        [`${i - 1}${j + 1}`],
-        [`${i}${j - 1}`],
-        [`${i}${j + 1}`],
-        [`${i + 1}${j - 1}`],
-        [`${i + 1}${j}`],
-        [`${i + 1}${j + 1}`],
+      fieldWithNeighbours[`${i}${j}`] = [
+        `${i - 1}${j - 1}`,
+        `${i - 1}${j}`,
+        `${i - 1}${j + 1}`,
+        `${i}${j - 1}`,
+        `${i}${j + 1}`,
+        `${i + 1}${j - 1}`,
+        `${i + 1}${j}`,
+        `${i + 1}${j + 1}`,
         false,
         false,
-      ]);
+        false,
+      ];
 
       for (let l = 0; l < mineCoords.length; l++) {
         if (mineCoords[l][0] === i && mineCoords[l][1] === j) {
-          fieldWithNeighbours.set(`${i}${j}`, [
-            [`${i - 1}${j - 1}`],
-            [`${i - 1}${j}`],
-            [`${i - 1}${j + 1}`],
-            [`${i}${j - 1}`],
-            [`${i}${j + 1}`],
-            [`${i + 1}${j - 1}`],
-            [`${i + 1}${j}`],
-            [`${i + 1}${j + 1}`],
-            true,
-            false,
-          ]);
+          fieldWithNeighbours[`${i}${j}`][8] = true;
         }
       }
 
@@ -92,19 +99,27 @@ board.addEventListener('click', function (e) {
   e.preventDefault();
   // console.log(e.target.dataset.coords);
   // console.log(fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]);
-  if (!fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]) {
-    e.target.style.backgroundColor = 'green';
-    fieldWithNeighbours.set(`${e.target.dataset.coords}`, true);
+  if (!fieldWithNeighbours[`${e.target.dataset.coords}`][8]) {
+    e.target.style.boxShadow = 'none';
+    fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
+    fieldWithNeighbours[e.target.dataset.coords][9] = true;
     console.log(fieldWithNeighbours);
   } else {
+    // end game
+    fieldWithNeighbours[e.target.dataset.coords][10] = false;
     e.target.style.backgroundColor = 'red';
   }
   console.log(e.target);
+  console.log(fieldWithNeighbours);
 });
 
 // Prawy przycisk myszy na dane pole - oznaczenie pola z miną
 board.addEventListener('contextmenu', function (e) {
   e.preventDefault();
   e.target.style.backgroundColor = 'violet';
+  fieldWithNeighbours[`${e.target.dataset.coords}`][9] = false;
+  fieldWithNeighbours[`${e.target.dataset.coords}`][10] = true;
+  console.log(fieldWithNeighbours);
+
   console.log(e.target);
 });
