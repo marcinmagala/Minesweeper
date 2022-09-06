@@ -35,11 +35,8 @@ const buildBoard = function () {
       mineCoords;
 
       box.classList.add('field');
-      box.setAttribute('row', `${i}`);
-      box.setAttribute('column', `${j}`);
-      box.setAttribute('coords', `${i},${j}`);
-      // box.setAttribute('mine', false);
-      box.dataset.mine = false;
+
+      box.dataset.coords = `${i}${j}`;
 
       fieldWithNeighbours.set(`${i}${j}`, [
         [i - 1, j - 1],
@@ -50,11 +47,11 @@ const buildBoard = function () {
         [i + 1, j - 1],
         [i + 1, j],
         [i + 1, j + 1],
+        false,
       ]);
+
       for (let l = 0; l < mineCoords.length; l++) {
         if (mineCoords[l][0] === i && mineCoords[l][1] === j) {
-          // box.setAttribute('mine', true);
-          box.dataset.mine = true;
           fieldWithNeighbours.set(`${i}${j}`, [
             [i - 1, j - 1],
             [i - 1, j],
@@ -66,7 +63,6 @@ const buildBoard = function () {
             [i + 1, j + 1],
             true,
           ]);
-          // fieldWithNeighbours.set(`${i}${j}`, { mine: true });
         }
       }
 
@@ -84,10 +80,9 @@ console.log(fieldWithNeighbours);
 // Lewy przycisk myszy na dane pole - odsłonięcie pola
 board.addEventListener('click', function (e) {
   e.preventDefault();
-  // const tempTarget = e.target;
-  // console.log(tempTarget);
-  // console.log(e.target.dataset.mine);
-  if (e.target.dataset.mine === 'false') {
+  // console.log(e.target.dataset.coords);
+  // console.log(fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]);
+  if (!fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]) {
     e.target.style.backgroundColor = 'green';
   } else {
     e.target.style.backgroundColor = 'red';
