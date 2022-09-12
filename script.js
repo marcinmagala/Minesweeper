@@ -20,7 +20,7 @@ const setMine = function () {
     const mineX = Math.floor(Math.random() * 10);
     const mineY = Math.floor(Math.random() * 10);
 
-    mineCoords.push([mineX, mineY]);
+    mineCoords.push(`${mineX}${mineY}`);
   }
 
   console.log(mineCoords);
@@ -76,7 +76,7 @@ const buildBoard = function () {
       ];
 
       for (let l = 0; l < mineCoords.length; l++) {
-        if (mineCoords[l][0] === i && mineCoords[l][1] === j) {
+        if (mineCoords[l] === `${i}${j}`) {
           fieldWithNeighbours[`${i}${j}`][8] = true;
         }
       }
@@ -101,9 +101,28 @@ board.addEventListener('click', function (e) {
   // console.log(fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]);
   if (!fieldWithNeighbours[`${e.target.dataset.coords}`][8]) {
     e.target.style.boxShadow = 'none';
+    e.target.style.backgroundColor = '#ddd';
     fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
     fieldWithNeighbours[e.target.dataset.coords][9] = true;
     console.log(fieldWithNeighbours);
+
+    // Tworzenie cyfry na polu (liczby min w sąsiedztwie)
+    let manyOfMine = 0;
+    for (const mine of mineCoords) {
+      for (let i = 0; i < 8; i++) {
+        if (fieldWithNeighbours[e.target.dataset.coords][i] === mine) {
+          manyOfMine++;
+          console.log(manyOfMine);
+        }
+      }
+    }
+    // e.target.textContent = `${manyOfMine}`;
+    if (manyOfMine !== 0) {
+      const manyOfMineBox = document.createElement('p');
+      manyOfMineBox.textContent = `${manyOfMine}`;
+
+      e.target.appendChild(manyOfMineBox);
+    }
   } else {
     // end game
     fieldWithNeighbours[e.target.dataset.coords][10] = false;
@@ -123,3 +142,5 @@ board.addEventListener('contextmenu', function (e) {
 
   console.log(e.target);
 });
+
+console.log(fieldWithNeighbours[11]);
