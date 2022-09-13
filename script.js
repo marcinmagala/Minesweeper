@@ -17,7 +17,7 @@ for (let k = 0; k < boxList.length; k++) {
 let mineCoords = [];
 
 const setMine = function () {
-  for (let m = 0; m < 10; m++) {
+  for (let m = 0; m < 15; m++) {
     const mineX = Math.floor(Math.random() * 10);
     const mineY = Math.floor(Math.random() * 10);
 
@@ -115,35 +115,29 @@ const openField = function (e) {
       }
 
       // Odsłanianie sąsiadów klikniętego pola
-
-      for (let i = 0; i < 8; i++) {
-        if (
-          fieldWithNeighbours[fieldWithNeighbours[field.dataset.coords][i]] !==
-          undefined
-        ) {
+      if (fieldWithNeighbours[field.dataset.coords][11] === 0) {
+        for (let i = 0; i < 8; i++) {
           if (
-            !fieldWithNeighbours[
+            // Sprawdza czy coords istnieje w obiekcie
+            fieldWithNeighbours[
               fieldWithNeighbours[field.dataset.coords][i]
-            ][9]
+            ] !== undefined
           ) {
-            console.log(
-              fieldWithNeighbours[fieldWithNeighbours[field.dataset.coords][i]]
-            );
-            console.log(fieldWithNeighbours[field.dataset.coords][i]);
-            console.log(
-              document.querySelector(
-                `[data-coords="${
-                  fieldWithNeighbours[field.dataset.coords][i]
-                }"]`
-              )
-            );
-            openField(
-              document.querySelector(
-                `[data-coords="${
-                  fieldWithNeighbours[field.dataset.coords][i]
-                }"]`
-              )
-            );
+            if (
+              // Sprawdza czy field został już kliknięty przez user, żeby nie nadpisywać danych
+              !fieldWithNeighbours[
+                fieldWithNeighbours[field.dataset.coords][i]
+              ][9]
+            ) {
+              openField(
+                document.querySelector(
+                  `[data-coords="${
+                    fieldWithNeighbours[field.dataset.coords][i]
+                  }"]`
+                )
+              );
+              // }
+            }
           }
         }
       }
@@ -186,3 +180,5 @@ const markAsMine = function (e) {
     console.log(e.target);
   }
 };
+
+// Ogarnąć tworzenie min aby nie tworzyło dwóch min o tych samych współrzędnych
