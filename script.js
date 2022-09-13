@@ -16,12 +16,22 @@ for (let k = 0; k < boxList.length; k++) {
 
 let mineCoords = [];
 
+const setMineCoords = function () {
+  const mineX = Math.floor(Math.random() * 10);
+  const mineY = Math.floor(Math.random() * 10);
+
+  mineCoords.forEach(item => {
+    console.log(item === `${mineX}${mineY}`);
+    if (item === `${mineX}${mineY}`) {
+      setMineCoords();
+    }
+  });
+  mineCoords.push(`${mineX}${mineY}`);
+};
+
 const setMine = function () {
   for (let m = 0; m < 15; m++) {
-    const mineX = Math.floor(Math.random() * 10);
-    const mineY = Math.floor(Math.random() * 10);
-
-    mineCoords.push(`${mineX}${mineY}`);
+    setMineCoords();
   }
 
   console.log(mineCoords);
