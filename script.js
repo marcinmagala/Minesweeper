@@ -181,4 +181,16 @@ const markAsMine = function (e) {
   }
 };
 
-// Ogarnąć tworzenie min aby nie tworzyło dwóch min o tych samych współrzędnych
+// //
+
+// 1. Ogarnąć tworzenie min aby nie tworzyło dwóch min o tych samych współrzędnych
+
+// 2. Po kliknięciu w minę wszystkie miny powinny zostać podświetlone, a plansza powinna zostać zablokowana
+
+// 3. Dodać timet który liczy czas od momentu naciśnięcia na pierwsze pole, aż do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
+
+// 4. Przycisk do resetowania w miejscu przycisku check
+
+// 5. Liczba pozostałych min do znalezienia obliczana na podstawie ilości znaczników mark as mine
+
+// 6. Dorobić grafiki min i znaczników
