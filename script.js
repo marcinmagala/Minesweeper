@@ -3,6 +3,7 @@
 const board = document.querySelector('.board');
 const win = document.querySelector('.win');
 const lose = document.querySelector('.lose');
+const endOfGame = document.querySelector('.end_of_game');
 
 // Tworzenie planszy
 const boxList = new Array(10);
@@ -95,52 +96,74 @@ console.log(fieldWithNeighbours);
 // Tworzenie sąsiadów
 
 // Lewy przycisk myszy na dane pole - odsłonięcie pola
-board.addEventListener('click', function (e) {
-  e.preventDefault();
-  // console.log(e.target.dataset.coords);
-  // console.log(fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]);
-  if (!fieldWithNeighbours[`${e.target.dataset.coords}`][8]) {
-    e.target.style.boxShadow = 'none';
-    e.target.style.backgroundColor = '#ddd';
-    fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
-    fieldWithNeighbours[e.target.dataset.coords][9] = true;
-    console.log(fieldWithNeighbours);
+board.addEventListener('click', e => openField(e));
 
-    // Tworzenie cyfry na polu (liczby min w sąsiedztwie)
-    let manyOfMine = 0;
-    for (const mine of mineCoords) {
-      for (let i = 0; i < 8; i++) {
-        if (fieldWithNeighbours[e.target.dataset.coords][i] === mine) {
-          manyOfMine++;
-          console.log(manyOfMine);
+const openField = function (e) {
+  e.preventDefault();
+
+  // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry
+  if (e.target.classList.contains('field')) {
+    // console.log(e.target.dataset.coords);
+    // console.log(fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]);
+    if (!fieldWithNeighbours[`${e.target.dataset.coords}`][8]) {
+      e.target.style.boxShadow = 'none';
+      e.target.style.backgroundColor = '#ddd';
+      fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
+      fieldWithNeighbours[e.target.dataset.coords][9] = true;
+      console.log(fieldWithNeighbours);
+
+      // Tworzenie cyfry na polu (liczby min w sąsiedztwie)
+      let manyOfMine = 0;
+      for (const mine of mineCoords) {
+        for (let i = 0; i < 8; i++) {
+          if (fieldWithNeighbours[e.target.dataset.coords][i] === mine) {
+            manyOfMine++;
+            console.log(manyOfMine);
+          }
         }
       }
-    }
-    // e.target.textContent = `${manyOfMine}`;
-    if (manyOfMine !== 0) {
-      const manyOfMineBox = document.createElement('p');
-      manyOfMineBox.textContent = `${manyOfMine}`;
+      // e.target.textContent = `${manyOfMine}`;
+      if (manyOfMine !== 0) {
+        const manyOfMineBox = document.createElement('p');
+        manyOfMineBox.textContent = `${manyOfMine}`;
 
-      e.target.appendChild(manyOfMineBox);
+        e.target.appendChild(manyOfMineBox);
+      }
+    } else {
+      // End game
+
+      // Change value "mark field as mine" in object from true to false
+      fieldWithNeighbours[e.target.dataset.coords][10] = false;
+
+      // Mark clicked field as mine
+      e.target.style.backgroundColor = 'red';
+
+      // Blocking clickable board
+      endOfGame.style.zIndex = '99';
+
+      // Show all mines
     }
-  } else {
-    // end game
-    fieldWithNeighbours[e.target.dataset.coords][10] = false;
-    e.target.style.backgroundColor = 'red';
+
+    console.log(e.target);
+    console.log(fieldWithNeighbours);
   }
-  console.log(e.target);
-  console.log(fieldWithNeighbours);
-});
+};
 
 // Prawy przycisk myszy na dane pole - oznaczenie pola z miną
-board.addEventListener('contextmenu', function (e) {
-  e.preventDefault();
-  e.target.style.backgroundColor = 'violet';
-  fieldWithNeighbours[`${e.target.dataset.coords}`][9] = false;
-  fieldWithNeighbours[`${e.target.dataset.coords}`][10] = true;
-  console.log(fieldWithNeighbours);
+board.addEventListener('contextmenu', e => markAsMine(e));
 
-  console.log(e.target);
-});
+const markAsMine = function (e) {
+  e.preventDefault();
+
+  // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry
+  if (e.target.classList.contains('field')) {
+    e.target.style.backgroundColor = 'violet';
+    fieldWithNeighbours[`${e.target.dataset.coords}`][9] = false;
+    fieldWithNeighbours[`${e.target.dataset.coords}`][10] = true;
+    console.log(fieldWithNeighbours);
+
+    console.log(e.target);
+  }
+};
 
 console.log(fieldWithNeighbours[11]);
