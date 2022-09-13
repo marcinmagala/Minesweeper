@@ -29,28 +29,9 @@ const setMine = function () {
 
 setMine();
 
-const test = function () {
-  console.log('test');
-};
-
-// objekt zamiast mapy
-// const objekt = {
-//   '00': [[1, 2], [3, 4], true, false],
-//   '01': [[5, 6], [7, 8], true, false],
-// };
-
-// console.log(objekt);
-
-// console.log((objekt['00'][3] = true));
-
-// objekt['02'] = [[1, 2], [5, 4], true, false];
-
-// console.log(objekt['02']);
-// console.log(objekt);
-
 const fieldWithNeighbours = {};
 // key === coords (string) from clicked field
-// value === Array(0-7 -> coords of neighbours of such field (string), 8 -> mine exist (boolean), 9 -> field clicked by user (boolean), 10 -> marked field as field with mine by user (boolean) )
+// value === Array(0-7 -> coords of neighbours of such field (string), 8 -> mine exist (boolean), 9 -> field clicked by user (boolean), 10 -> marked field as field with mine by user (boolean), 11 -> many of mines in neighbours of field )
 
 const buildBoard = function () {
   for (let i = 0; i < boxList.length; i++) {
@@ -74,6 +55,7 @@ const buildBoard = function () {
         false,
         false,
         false,
+        0,
       ];
 
       for (let l = 0; l < mineCoords.length; l++) {
@@ -91,52 +73,91 @@ buildBoard();
 
 console.log(fieldWithNeighbours);
 
-// console.log(fieldWithNeighbours.get(`${fieldWithNeighbours.get('11')[1]}`));
-
 // Tworzenie sąsiadów
 
 // Lewy przycisk myszy na dane pole - odsłonięcie pola
 board.addEventListener('click', e => openField(e));
 
 const openField = function (e) {
-  e.preventDefault();
+  // e.preventDefault();
+  console.log(e);
+  let field;
+  e.pointerType === 'mouse' ? (field = e.target) : (field = e);
 
+  // console.log(field);
   // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry
-  if (e.target.classList.contains('field')) {
-    // console.log(e.target.dataset.coords);
-    // console.log(fieldWithNeighbours.get(`${e.target.dataset.coords}`)[8]);
-    if (!fieldWithNeighbours[`${e.target.dataset.coords}`][8]) {
-      e.target.style.boxShadow = 'none';
-      e.target.style.backgroundColor = '#ddd';
-      fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
-      fieldWithNeighbours[e.target.dataset.coords][9] = true;
+  if (field.classList.contains('field')) {
+    if (!fieldWithNeighbours[`${field.dataset.coords}`][8]) {
+      field.style.boxShadow = 'none';
+      field.style.backgroundColor = '#ddd';
+      fieldWithNeighbours[`${field.dataset.coords}`][10] = false;
+      fieldWithNeighbours[field.dataset.coords][9] = true;
       console.log(fieldWithNeighbours);
 
       // Tworzenie cyfry na polu (liczby min w sąsiedztwie)
       let manyOfMine = 0;
       for (const mine of mineCoords) {
         for (let i = 0; i < 8; i++) {
-          if (fieldWithNeighbours[e.target.dataset.coords][i] === mine) {
+          if (fieldWithNeighbours[field.dataset.coords][i] === mine) {
             manyOfMine++;
             console.log(manyOfMine);
           }
         }
       }
-      // e.target.textContent = `${manyOfMine}`;
+
+      fieldWithNeighbours[field.dataset.coords][11] = manyOfMine;
+
       if (manyOfMine !== 0) {
         const manyOfMineBox = document.createElement('p');
         manyOfMineBox.textContent = `${manyOfMine}`;
 
-        e.target.appendChild(manyOfMineBox);
+        field.appendChild(manyOfMineBox);
+      }
+
+      // Odsłanianie sąsiadów klikniętego pola
+
+      for (let i = 0; i < 8; i++) {
+        if (
+          fieldWithNeighbours[fieldWithNeighbours[field.dataset.coords][i]] !==
+          undefined
+        ) {
+          if (
+            !fieldWithNeighbours[
+              fieldWithNeighbours[field.dataset.coords][i]
+            ][9]
+          ) {
+            console.log(
+              fieldWithNeighbours[fieldWithNeighbours[field.dataset.coords][i]]
+            );
+            console.log(fieldWithNeighbours[field.dataset.coords][i]);
+            console.log(
+              document.querySelector(
+                `[data-coords="${
+                  fieldWithNeighbours[field.dataset.coords][i]
+                }"]`
+              )
+            );
+            openField(
+              document.querySelector(
+                `[data-coords="${
+                  fieldWithNeighbours[field.dataset.coords][i]
+                }"]`
+              )
+            );
+          }
+        }
       }
     } else {
       // End game
 
       // Change value "mark field as mine" in object from true to false
-      fieldWithNeighbours[e.target.dataset.coords][10] = false;
+      fieldWithNeighbours[field.dataset.coords][10] = false;
+
+      // Info do obiektu czy pole zostało kliknięte przez użytkownika
+      fieldWithNeighbours[field.dataset.coords][9] = true;
 
       // Mark clicked field as mine
-      e.target.style.backgroundColor = 'red';
+      field.style.backgroundColor = 'red';
 
       // Blocking clickable board
       endOfGame.style.zIndex = '99';
@@ -144,7 +165,7 @@ const openField = function (e) {
       // Show all mines
     }
 
-    console.log(e.target);
+    console.log(field);
     console.log(fieldWithNeighbours);
   }
 };
@@ -165,5 +186,3 @@ const markAsMine = function (e) {
     console.log(e.target);
   }
 };
-
-console.log(fieldWithNeighbours[11]);
