@@ -5,6 +5,27 @@ const win = document.querySelector('.win');
 const lose = document.querySelector('.lose');
 const endOfGame = document.querySelector('.end_of_game');
 
+// manu bar
+
+// Wskaźnik ilości pozostałych min do znalezienia
+
+const findMine = document.querySelector('.mine');
+
+let manyOfFindingMine = 15;
+
+const createValueOfFindingMine = function (value) {
+  // Ilośc min - ilość postawionych znaczniów przez gracza
+  if (value < 0) {
+    manyOfFindingMine--;
+  } else {
+    manyOfFindingMine++;
+  }
+  findMine.textContent = `${manyOfFindingMine}`;
+};
+
+findMine.textContent = `15`;
+
+//
 // Tworzenie planszy
 const boxList = new Array(10);
 
@@ -92,89 +113,94 @@ console.log(fieldWithNeighbours);
 board.addEventListener('click', e => openField(e));
 
 const openField = function (e) {
-  // e.preventDefault();
-  console.log(e);
   let field;
   e.pointerType === 'mouse' ? (field = e.target) : (field = e);
 
-  // console.log(field);
   // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry
-  if (field.classList.contains('field')) {
-    if (!fieldWithNeighbours[`${field.dataset.coords}`][8]) {
-      field.style.boxShadow = 'none';
-      field.style.backgroundColor = '#ddd';
-      fieldWithNeighbours[`${field.dataset.coords}`][10] = false;
-      fieldWithNeighbours[field.dataset.coords][9] = true;
+  if (fieldWithNeighbours[`${field.dataset.coords}`][10] === false)
+    if (field.classList.contains('field')) {
+      if (!fieldWithNeighbours[`${field.dataset.coords}`][8]) {
+        // Zmiana stylu pola jeśli na polu nie występuje mina
+        field.style.boxShadow = 'none';
+        field.style.backgroundColor = '#ddd';
+        // Zmiana wartości ilości pól oznaczonych jako pole z miną
+        if (fieldWithNeighbours[`${field.dataset.coords}`][10]) {
+          createValueOfFindingMine(1);
+        }
+        //Zmiana informacji w obiekcie infomacji o danym polu, że pole nie zostało oznaczone jako pole z miną
+        fieldWithNeighbours[`${field.dataset.coords}`][10] = false;
+        // Zmiana informacji w obiekcie -> informacji o danym polu, że zostało kliknięte przez użytkowanika
+        fieldWithNeighbours[field.dataset.coords][9] = true;
+        console.log(fieldWithNeighbours);
+
+        // Tworzenie cyfry na polu (liczby min w sąsiedztwie)
+        let manyOfMine = 0;
+        for (const mine of mineCoords) {
+          for (let i = 0; i < 8; i++) {
+            if (fieldWithNeighbours[field.dataset.coords][i] === mine) {
+              manyOfMine++;
+              console.log(manyOfMine);
+            }
+          }
+        }
+
+        fieldWithNeighbours[field.dataset.coords][11] = manyOfMine;
+
+        if (manyOfMine !== 0) {
+          const manyOfMineBox = document.createElement('p');
+          manyOfMineBox.textContent = `${manyOfMine}`;
+
+          field.appendChild(manyOfMineBox);
+        }
+
+        // Odsłanianie sąsiadów klikniętego pola
+        if (fieldWithNeighbours[field.dataset.coords][11] === 0) {
+          for (let i = 0; i < 8; i++) {
+            if (
+              // Sprawdza czy coords istnieje w obiekcie
+              fieldWithNeighbours[
+                fieldWithNeighbours[field.dataset.coords][i]
+              ] !== undefined &&
+              // Sprawdza czy field został już kliknięty przez user, żeby nie nadpisywać danych
+              !fieldWithNeighbours[
+                fieldWithNeighbours[field.dataset.coords][i]
+              ][9]
+            ) {
+              openField(
+                document.querySelector(
+                  `[data-coords="${
+                    fieldWithNeighbours[field.dataset.coords][i]
+                  }"]`
+                )
+              );
+            }
+          }
+        }
+      } else {
+        // End game
+
+        // Change value "mark field as mine" in object from true to false
+        fieldWithNeighbours[field.dataset.coords][10] = false;
+
+        // Info do obiektu czy pole zostało kliknięte przez użytkownika
+        fieldWithNeighbours[field.dataset.coords][9] = true;
+
+        // Blocking clickable board
+        endOfGame.style.zIndex = '99';
+
+        // Show all mines when clocked in one of them
+        mineCoords.forEach(coord => {
+          document.querySelector(`[data-coords="${coord}"]`).style.boxShadow =
+            'none';
+          document.querySelector(
+            `[data-coords="${coord}"]`
+          ).style.backgroundColor = 'red';
+        });
+      }
+
+      console.log(field);
       console.log(fieldWithNeighbours);
-
-      // Tworzenie cyfry na polu (liczby min w sąsiedztwie)
-      let manyOfMine = 0;
-      for (const mine of mineCoords) {
-        for (let i = 0; i < 8; i++) {
-          if (fieldWithNeighbours[field.dataset.coords][i] === mine) {
-            manyOfMine++;
-            console.log(manyOfMine);
-          }
-        }
-      }
-
-      fieldWithNeighbours[field.dataset.coords][11] = manyOfMine;
-
-      if (manyOfMine !== 0) {
-        const manyOfMineBox = document.createElement('p');
-        manyOfMineBox.textContent = `${manyOfMine}`;
-
-        field.appendChild(manyOfMineBox);
-      }
-
-      // Odsłanianie sąsiadów klikniętego pola
-      if (fieldWithNeighbours[field.dataset.coords][11] === 0) {
-        for (let i = 0; i < 8; i++) {
-          if (
-            // Sprawdza czy coords istnieje w obiekcie
-            fieldWithNeighbours[
-              fieldWithNeighbours[field.dataset.coords][i]
-            ] !== undefined &&
-            // Sprawdza czy field został już kliknięty przez user, żeby nie nadpisywać danych
-            !fieldWithNeighbours[
-              fieldWithNeighbours[field.dataset.coords][i]
-            ][9]
-          ) {
-            openField(
-              document.querySelector(
-                `[data-coords="${
-                  fieldWithNeighbours[field.dataset.coords][i]
-                }"]`
-              )
-            );
-          }
-        }
-      }
-    } else {
-      // End game
-
-      // Change value "mark field as mine" in object from true to false
-      fieldWithNeighbours[field.dataset.coords][10] = false;
-
-      // Info do obiektu czy pole zostało kliknięte przez użytkownika
-      fieldWithNeighbours[field.dataset.coords][9] = true;
-
-      // Blocking clickable board
-      endOfGame.style.zIndex = '99';
-
-      // Show all mines when clocked in one of them
-      mineCoords.forEach(coord => {
-        document.querySelector(`[data-coords="${coord}"]`).style.boxShadow =
-          'none';
-        document.querySelector(
-          `[data-coords="${coord}"]`
-        ).style.backgroundColor = 'red';
-      });
     }
-
-    console.log(field);
-    console.log(fieldWithNeighbours);
-  }
 };
 
 // Prawy przycisk myszy na dane pole - oznaczenie pola z miną
@@ -183,14 +209,30 @@ board.addEventListener('contextmenu', e => markAsMine(e));
 const markAsMine = function (e) {
   e.preventDefault();
 
-  // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry
-  if (e.target.classList.contains('field')) {
-    e.target.style.backgroundColor = 'violet';
-    fieldWithNeighbours[`${e.target.dataset.coords}`][9] = false;
-    fieldWithNeighbours[`${e.target.dataset.coords}`][10] = true;
-    console.log(fieldWithNeighbours);
+  // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry, oraz czy pole nie zostało już odsłonięte
+  if (
+    e.target.classList.contains('field') &&
+    fieldWithNeighbours[`${e.target.dataset.coords}`][9] === false
+  ) {
+    if (fieldWithNeighbours[`${e.target.dataset.coords}`][10] === false) {
+      e.target.style.backgroundColor = 'violet';
 
-    console.log(e.target);
+      // Zmiana wyświetlanej liczby min pozostałych do znalezienia
+
+      createValueOfFindingMine(-1);
+
+      fieldWithNeighbours[`${e.target.dataset.coords}`][10] = true;
+
+      console.log(fieldWithNeighbours);
+
+      console.log(e.target);
+    } else {
+      e.target.style.backgroundColor = '#ddd';
+
+      createValueOfFindingMine(1);
+
+      fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
+    }
   }
 };
 
@@ -200,6 +242,6 @@ const markAsMine = function (e) {
 
 // 4. Przycisk do resetowania w miejscu przycisku check - emoticon smile i emoticon sad kiedy gra jest przegrana
 
-// 5. Liczba pozostałych min do znalezienia obliczana na podstawie ilości znaczników mark as mine
-
 // 6. Dorobić grafiki min i znaczników
+
+// 7. Ogarnąć jak dokładnie działa event.preventDefault()
