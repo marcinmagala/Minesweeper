@@ -25,6 +25,23 @@ const createValueOfFindingMine = function (value) {
 
 findMine.textContent = `15`;
 
+// Tworzenie timera
+const clock = document.querySelector('.time');
+
+let valueOfClock = 0;
+const increaseClock = function () {
+  valueOfClock++;
+  if (valueOfClock.toString().length === 1) {
+    clock.textContent = `00${valueOfClock}`;
+  } else if (valueOfClock.toString().length === 2) {
+    clock.textContent = `0${valueOfClock}`;
+  } else if (valueOfClock.toString().length === 3) {
+    clock.textContent = `${valueOfClock}`;
+  }
+};
+
+window.setInterval(increaseClock, 1000);
+
 //
 // Tworzenie planszy
 const boxList = new Array(10);
