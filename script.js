@@ -16,28 +16,31 @@ for (let k = 0; k < boxList.length; k++) {
 
 let mineCoords = [];
 
+// Funkcja losuje wartości pozycji dla każdej z min i umieszcza je w array mineCoords
 const setMineCoords = function () {
   const mineX = Math.floor(Math.random() * 10);
   const mineY = Math.floor(Math.random() * 10);
 
-  mineCoords.forEach(item => {
-    console.log(item === `${mineX}${mineY}`);
-    if (item === `${mineX}${mineY}`) {
-      setMineCoords();
-    }
-  });
   mineCoords.push(`${mineX}${mineY}`);
 };
 
+// Funkcja tworząca Array z współrzędnymi min
 const setMine = function () {
   for (let m = 0; m < 15; m++) {
     setMineCoords();
   }
 
-  console.log(mineCoords);
+  // Funkcja sprawdzająca czy wszystkie wartości w tablicy są różne (za pomocą funkcji set jest generowany nowy array tylko z różnymi wartościami - jeśli długości dwóch array są różne to funkcja jest wywoływana ponownie)
+  const checkDifferent = new Set(mineCoords);
+  if (mineCoords.length !== checkDifferent.size) {
+    mineCoords = [];
+    setMine();
+  }
 };
 
 setMine();
+
+console.log(mineCoords);
 
 const fieldWithNeighbours = {};
 // key === coords (string) from clicked field
