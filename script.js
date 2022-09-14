@@ -134,23 +134,19 @@ const openField = function (e) {
             // Sprawdza czy coords istnieje w obiekcie
             fieldWithNeighbours[
               fieldWithNeighbours[field.dataset.coords][i]
-            ] !== undefined
+            ] !== undefined &&
+            // Sprawdza czy field został już kliknięty przez user, żeby nie nadpisywać danych
+            !fieldWithNeighbours[
+              fieldWithNeighbours[field.dataset.coords][i]
+            ][9]
           ) {
-            if (
-              // Sprawdza czy field został już kliknięty przez user, żeby nie nadpisywać danych
-              !fieldWithNeighbours[
-                fieldWithNeighbours[field.dataset.coords][i]
-              ][9]
-            ) {
-              openField(
-                document.querySelector(
-                  `[data-coords="${
-                    fieldWithNeighbours[field.dataset.coords][i]
-                  }"]`
-                )
-              );
-              // }
-            }
+            openField(
+              document.querySelector(
+                `[data-coords="${
+                  fieldWithNeighbours[field.dataset.coords][i]
+                }"]`
+              )
+            );
           }
         }
       }
@@ -163,13 +159,17 @@ const openField = function (e) {
       // Info do obiektu czy pole zostało kliknięte przez użytkownika
       fieldWithNeighbours[field.dataset.coords][9] = true;
 
-      // Mark clicked field as mine
-      field.style.backgroundColor = 'red';
-
       // Blocking clickable board
       endOfGame.style.zIndex = '99';
 
-      // Show all mines
+      // Show all mines when clocked in one of them
+      mineCoords.forEach(coord => {
+        document.querySelector(`[data-coords="${coord}"]`).style.boxShadow =
+          'none';
+        document.querySelector(
+          `[data-coords="${coord}"]`
+        ).style.backgroundColor = 'red';
+      });
     }
 
     console.log(field);
@@ -196,13 +196,9 @@ const markAsMine = function (e) {
 
 // //
 
-// 1. Ogarnąć tworzenie min aby nie tworzyło dwóch min o tych samych współrzędnych
+// 3. Dodać timer który liczy czas od momentu naciśnięcia na pierwsze pole, aż do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
 
-// 2. Po kliknięciu w minę wszystkie miny powinny zostać podświetlone, a plansza powinna zostać zablokowana
-
-// 3. Dodać timet który liczy czas od momentu naciśnięcia na pierwsze pole, aż do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
-
-// 4. Przycisk do resetowania w miejscu przycisku check
+// 4. Przycisk do resetowania w miejscu przycisku check - emoticon smile i emoticon sad kiedy gra jest przegrana
 
 // 5. Liczba pozostałych min do znalezienia obliczana na podstawie ilości znaczników mark as mine
 
