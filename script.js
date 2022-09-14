@@ -255,6 +255,10 @@ const markAsMine = function (e) {
 
 // //
 
+// 1. Komunikat po wygraniu i przegraniu
+
+// 2. Init function która odpali wszystko na początku gry i przy jej zresetowaniu
+
 // 3. Dodać timer który liczy czas od momentu naciśnięcia na pierwsze pole, aż do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
 
 // 4. Przycisk do resetowania w miejscu przycisku check - emoticon smile i emoticon sad kiedy gra jest przegrana
