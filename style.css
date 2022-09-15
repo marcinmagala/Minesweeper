@@ -12,6 +12,8 @@ body {
   max-width: 100vw;
   max-height: 100vh;
   font-family: sans-serif;
+  background-image: url('img/blob-scatter-haikei.svg');
+  background-size: cover;
 }
 
 .app {
@@ -23,6 +25,8 @@ body {
   border-radius: 1px;
   display: flex;
   flex-direction: column;
+
+  box-shadow: 0 0 45px rgba(0, 0, 0, 0.3);
 }
 
 .options {
@@ -86,7 +90,6 @@ header {
 
 header {
   width: 100%;
-  /* height: 10rem; */
 
   font-size: 2rem;
 
@@ -142,5 +145,38 @@ main {
 .field p {
   position: absolute;
   font-size: 3rem;
+  font-weight: 700;
   transform: translate(80%, 25%);
+}
+
+.many_of_mine_color_1 {
+  color: blue;
+}
+
+.many_of_mine_color_2 {
+  color: green;
+}
+
+.many_of_mine_color_3 {
+  color: red;
+}
+
+.many_of_mine_color_4 {
+  color: purple;
+}
+
+.many_of_mine_color_5 {
+  color: maroon;
+}
+
+.many_of_mine_color_6 {
+  color: turquoise;
+}
+
+.many_of_mine_color_7 {
+  color: black;
+}
+
+.many_of_mine_color_8 {
+  color: #555;
 }

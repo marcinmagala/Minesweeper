@@ -1,8 +1,7 @@
 'use strict';
 
 const board = document.querySelector('.board');
-// const win = document.querySelector('.win');
-// const lose = document.querySelector('.lose');
+
 const endOfGame = document.querySelector('.end_of_game');
 
 const emoticonSad = document.querySelector('.emoticon_sad');
@@ -11,7 +10,7 @@ const emoticonSmile = document.querySelector('.emoticon_smile');
 // Funkcja resetująca i odpalająca grę na nowo
 const reset = function () {
   // Reset wskaźnika ilości pozostałych min do znalezienia
-  manyOfFindingMine = 3;
+  manyOfFindingMine = 15;
   findMine.textContent = manyOfFindingMine;
 
   // Reset timera
@@ -54,7 +53,7 @@ const reset = function () {
 
 const findMine = document.querySelector('.mine');
 // W tym miejscu deklarujemy ile będzie min na planszy
-let manyOfFindingMine = 3;
+let manyOfFindingMine = 15;
 
 const createValueOfFindingMine = function (value) {
   // Ilośc min - ilość postawionych znaczniów przez gracza
@@ -87,11 +86,8 @@ const increaseClock = function () {
   clockTimeout = setTimeout(increaseClock, 1000);
 };
 
-//  clockTimeout = setInterval(increaseClock, 1000);
-
 increaseClock();
 
-//
 // Tworzenie planszy
 const boxList = new Array(10);
 
@@ -123,14 +119,13 @@ const setMine = function () {
     mineCoords = [];
     setMine();
   }
-  console.log(mineCoords);
 };
 
 setMine();
 
 let fieldWithNeighbours = {};
 // key === coords (string) from clicked field
-// value === Array(0-7 -> coords of neighbours of such field (string), 8 -> mine exist (boolean), 9 -> field clicked by user (boolean), 10 -> marked field as field with mine by user (boolean), 11 -> many of mines in neighbours of field )
+// value === Array(0-7 -> coords of neighbours of such field (string), 8 -> mine exist (boolean(default === false)), 9 -> field clicked by user (boolean(default === false)), 10 -> marked field as field with mine by user (boolean(default === false)), 11 -> many of mines in neighbours of field(number))
 
 const buildBoard = function () {
   for (let i = 0; i < boxList.length; i++) {
@@ -165,12 +160,9 @@ const buildBoard = function () {
       board.appendChild(box);
     }
   }
-  console.log(fieldWithNeighbours);
 };
 
 buildBoard();
-
-// console.log(fieldWithNeighbours);
 
 // Tworzenie sąsiadów
 
@@ -196,15 +188,13 @@ const openField = function (e) {
         fieldWithNeighbours[`${field.dataset.coords}`][10] = false;
         // Zmiana informacji w obiekcie -> informacji o danym polu, że zostało kliknięte przez użytkowanika
         fieldWithNeighbours[field.dataset.coords][9] = true;
-        console.log(fieldWithNeighbours);
 
-        // Tworzenie cyfry na polu (liczby min w sąsiedztwie)
+        // Tworzenie cyfry na polu (liczba min w sąsiedztwie)
         let manyOfMine = 0;
         for (const mine of mineCoords) {
           for (let i = 0; i < 8; i++) {
             if (fieldWithNeighbours[field.dataset.coords][i] === mine) {
               manyOfMine++;
-              console.log(manyOfMine);
             }
           }
         }
@@ -273,9 +263,6 @@ const openField = function (e) {
         // Stop Timer
         clearTimeout(clockTimeout);
       }
-
-      console.log(field);
-      console.log(fieldWithNeighbours);
     }
 };
 
@@ -287,14 +274,13 @@ board.addEventListener('contextmenu', e => markAsMine(e));
 const markAsMine = function (e) {
   e.preventDefault();
 
-  // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry, oraz czy pole nie zostało już odsłonięte
+  // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry gracz będzie dalej naciskał na pola gry, oraz czy pole nie zostało już odsłonięte
 
   if (
     e.target.classList.contains('field') &&
     fieldWithNeighbours[`${e.target.dataset.coords}`][9] === false
   ) {
     if (fieldWithNeighbours[`${e.target.dataset.coords}`][10] === false) {
-      // e.target.style.backgroundColor = 'violet';
       e.target.style.backgroundImage = "url('img/red-flag.png')";
 
       // Zmiana wyświetlanej liczby min pozostałych do znalezienia
@@ -312,15 +298,12 @@ const markAsMine = function (e) {
       createValueOfFindingMine(1);
 
       fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
-
-      console.log(winningScore);
     }
   }
   // Sprawdzanie czy zostały zaznaczone wszystkie pola z minami
   for (let i = 0; i < mineCoords.length; i++) {
     if (fieldWithNeighbours[mineCoords[i]][10] === true) {
       winningScore++;
-      console.log(winningScore);
     }
   }
   if (winningScore === mineCoords.length && manyOfFindingMine === 0) {
@@ -346,9 +329,3 @@ emoticonSad.addEventListener('click', function () {
 
   reset();
 });
-
-// //
-
-// 5. Liczby powinny mieć różne kolory w zależności od tego ile min jest w okolicy
-
-// 10. Zmienić ilość min na 15
