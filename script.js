@@ -1,9 +1,28 @@
 'use strict';
 
 const board = document.querySelector('.board');
-const win = document.querySelector('.win');
-const lose = document.querySelector('.lose');
+// const win = document.querySelector('.win');
+// const lose = document.querySelector('.lose');
 const endOfGame = document.querySelector('.end_of_game');
+
+const emoticonSad = document.querySelector('.emoticon_sad');
+const emoticonSmile = document.querySelector('.emoticon_smile');
+
+// Funkcja resetująca i odpalająca grę na nowo
+// const init = function () {
+//   // Wskaźnik ilości pozostałych min do znalezienia
+//   manyOfFindingMine = 15;
+//   findMine.textContent = manyOfFindingMine;
+
+//   // Reset timera
+//   // window.clearTimeout();
+//   valueOfClock = 0;
+//   increaseClock();
+
+//   // Resetowanie pozycji min
+//   // mineCoords = [];
+//   setMine();
+// };
 
 // manu bar
 
@@ -23,7 +42,7 @@ const createValueOfFindingMine = function (value) {
   findMine.textContent = `${manyOfFindingMine}`;
 };
 
-findMine.textContent = `15`;
+findMine.textContent = manyOfFindingMine;
 
 // Tworzenie timera
 const clock = document.querySelector('.time');
@@ -38,9 +57,10 @@ const increaseClock = function () {
   } else if (valueOfClock.toString().length === 3) {
     clock.textContent = `${valueOfClock}`;
   }
+  window.setTimeout(increaseClock, 1000);
 };
 
-window.setInterval(increaseClock, 1000);
+increaseClock();
 
 //
 // Tworzenie planszy
@@ -213,6 +233,10 @@ const openField = function (e) {
             `[data-coords="${coord}"]`
           ).style.backgroundColor = 'red';
         });
+
+        // Change emoticon
+        emoticonSmile.classList.add('hidden');
+        emoticonSad.classList.remove('hidden');
       }
 
       console.log(field);
@@ -252,6 +276,16 @@ const markAsMine = function (e) {
     }
   }
 };
+
+emoticonSmile.addEventListener('click', function () {
+  emoticonSmile.classList.add('hidden');
+  emoticonSad.classList.remove('hidden');
+});
+
+emoticonSad.addEventListener('click', function () {
+  emoticonSmile.classList.remove('hidden');
+  emoticonSad.classList.add('hidden');
+});
 
 // //
 
