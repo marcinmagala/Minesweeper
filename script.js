@@ -16,6 +16,8 @@ const reset = function () {
 
   // Reset timera
   valueOfClock = 0;
+  clearTimeout(clockTimeout);
+  increaseClock();
 
   // Resetowanie pozycji min
   mineCoords = [];
@@ -69,6 +71,8 @@ findMine.textContent = manyOfFindingMine;
 // Tworzenie timera
 const clock = document.querySelector('.time');
 
+let clockTimeout;
+
 let valueOfClock = 0;
 const increaseClock = function () {
   valueOfClock++;
@@ -79,8 +83,11 @@ const increaseClock = function () {
   } else if (valueOfClock.toString().length === 3) {
     clock.textContent = `${valueOfClock}`;
   }
-  window.setTimeout(increaseClock, 1000);
+
+  clockTimeout = setTimeout(increaseClock, 1000);
 };
+
+//  clockTimeout = setInterval(increaseClock, 1000);
 
 increaseClock();
 
@@ -260,6 +267,7 @@ const openField = function (e) {
         emoticonSad.classList.remove('hidden');
 
         // Stop Timer
+        clearTimeout(clockTimeout);
       }
 
       console.log(field);
@@ -314,12 +322,7 @@ const markAsMine = function (e) {
     endOfGame.style.zIndex = '99';
     endOfGame.style.backgroundColor = 'greenyellow';
     endOfGame.textContent = `WYGRANA!\r\nGratulujemy zwycięstwa!\r\nCzas gry: ${valueOfClock} sekund`;
-    //     WYGRANA!
-    // Gratulujemy zwycięstwa!
-
-    // Czas gry: 148
-    // Twój najlepszy czas w kategorii Początkujący to: 148
-    // Liczba kliknięć: 23
+    clearTimeout(clockTimeout);
   } else {
     winningScore = 0;
   }
@@ -329,15 +332,6 @@ emoticonSmile.addEventListener('click', function () {
   emoticonSmile.classList.add('hidden');
   emoticonSad.classList.remove('hidden');
 
-  // // Show all mines when clicked reset button
-  // mineCoords.forEach(coord => {
-  //   document.querySelector(`[data-coords="${coord}"]`).style.boxShadow = 'none';
-  //   document.querySelector(`[data-coords="${coord}"]`).style.backgroundColor =
-  //     'red';
-  // });
-
-  // Blocking clickable board
-  // endOfGame.style.zIndex = '99';
   reset();
 });
 
@@ -350,17 +344,9 @@ emoticonSad.addEventListener('click', function () {
 
 // //
 
-// 1. Komunikat po wygraniu i przegraniu
-
-// Funkcja init, która odpali wszystko na początku gry
-
-// 3. Dodać timer który  do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
-
 // 6. Dorobić grafiki min i znaczników
 
 // 7. Ogarnąć jak dokładnie działa event.preventDefault()
-
-// 8. Stop timer when lost the game
 
 // 9. Logo strony
 
