@@ -9,20 +9,33 @@ const emoticonSad = document.querySelector('.emoticon_sad');
 const emoticonSmile = document.querySelector('.emoticon_smile');
 
 // Funkcja resetująca i odpalająca grę na nowo
-// const init = function () {
-//   // Wskaźnik ilości pozostałych min do znalezienia
-//   manyOfFindingMine = 15;
-//   findMine.textContent = manyOfFindingMine;
+const reset = function () {
+  // Reset wskaźnika ilości pozostałych min do znalezienia
+  manyOfFindingMine = 15;
+  findMine.textContent = manyOfFindingMine;
 
-//   // Reset timera
-//   // window.clearTimeout();
-//   valueOfClock = 0;
-//   increaseClock();
+  // Reset timera
+  valueOfClock = 0;
 
-//   // Resetowanie pozycji min
-//   // mineCoords = [];
-//   setMine();
-// };
+  // Resetowanie pozycji min
+  mineCoords = [];
+
+  // Tworzenie nowych pozycji min
+  setMine();
+
+  // Resetowanie obiektu tworzącego planszę
+  fieldWithNeighbours = {};
+
+  // Usunięcie całej planszy
+  const clearFields = document.querySelectorAll('.field');
+  clearFields.forEach(field => field.remove());
+
+  // Budowanie nowej planszy i nowego obiektu z danymi o polach
+  buildBoard();
+
+  // Zdjęcie blokady z planszy
+  endOfGame.style.zIndex = '-1';
+};
 
 // manu bar
 
@@ -94,13 +107,12 @@ const setMine = function () {
     mineCoords = [];
     setMine();
   }
+  console.log(mineCoords);
 };
 
 setMine();
 
-console.log(mineCoords);
-
-const fieldWithNeighbours = {};
+let fieldWithNeighbours = {};
 // key === coords (string) from clicked field
 // value === Array(0-7 -> coords of neighbours of such field (string), 8 -> mine exist (boolean), 9 -> field clicked by user (boolean), 10 -> marked field as field with mine by user (boolean), 11 -> many of mines in neighbours of field )
 
@@ -108,7 +120,6 @@ const buildBoard = function () {
   for (let i = 0; i < boxList.length; i++) {
     for (let j = 0; j < boxList[i].length; j++) {
       const box = document.createElement('div');
-      mineCoords;
 
       box.classList.add('field');
 
@@ -138,11 +149,12 @@ const buildBoard = function () {
       board.appendChild(box);
     }
   }
+  console.log(fieldWithNeighbours);
 };
 
 buildBoard();
 
-console.log(fieldWithNeighbours);
+// console.log(fieldWithNeighbours);
 
 // Tworzenie sąsiadów
 
@@ -154,8 +166,8 @@ const openField = function (e) {
   e.pointerType === 'mouse' ? (field = e.target) : (field = e);
 
   // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry
-  if (fieldWithNeighbours[`${field.dataset.coords}`][10] === false)
-    if (field.classList.contains('field')) {
+  if (field.classList.contains('field'))
+    if (fieldWithNeighbours[`${field.dataset.coords}`][10] === false) {
       if (!fieldWithNeighbours[`${field.dataset.coords}`][8]) {
         // Zmiana stylu pola jeśli na polu nie występuje mina
         field.style.boxShadow = 'none';
@@ -237,6 +249,8 @@ const openField = function (e) {
         // Change emoticon
         emoticonSmile.classList.add('hidden');
         emoticonSad.classList.remove('hidden');
+
+        // Stop Timer
       }
 
       console.log(field);
@@ -280,18 +294,30 @@ const markAsMine = function (e) {
 emoticonSmile.addEventListener('click', function () {
   emoticonSmile.classList.add('hidden');
   emoticonSad.classList.remove('hidden');
+
+  // Show all mines when clicked reset button
+  mineCoords.forEach(coord => {
+    document.querySelector(`[data-coords="${coord}"]`).style.boxShadow = 'none';
+    document.querySelector(`[data-coords="${coord}"]`).style.backgroundColor =
+      'red';
+  });
+
+  // Blocking clickable board
+  endOfGame.style.zIndex = '99';
 });
 
 emoticonSad.addEventListener('click', function () {
   emoticonSmile.classList.remove('hidden');
   emoticonSad.classList.add('hidden');
+
+  reset();
 });
 
 // //
 
 // 1. Komunikat po wygraniu i przegraniu
 
-// 2. Init function która odpali wszystko na początku gry i przy jej zresetowaniu
+// 2. reset function która odpali wszystko na początku gry i przy jej zresetowaniu
 
 // 3. Dodać timer który liczy czas od momentu naciśnięcia na pierwsze pole, aż do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
 
@@ -300,3 +326,5 @@ emoticonSad.addEventListener('click', function () {
 // 6. Dorobić grafiki min i znaczników
 
 // 7. Ogarnąć jak dokładnie działa event.preventDefault()
+
+// 8. Stop timer when lost the game
