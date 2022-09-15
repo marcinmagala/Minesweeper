@@ -33,7 +33,7 @@ body {
   font-size: 2rem;
   font-weight: 700;
 
-  background-color: #eee;
+  background-color: #ddd;
 }
 
 header {
@@ -57,17 +57,20 @@ header {
   width: 4rem;
   height: 4rem;
 
-  border-radius: 5px;
-
   cursor: pointer;
+  padding: 2px;
 }
 
 .emoticon_sad {
   background-color: red;
+
+  box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #4c0000;
 }
 
 .emoticon_smile {
   background-color: greenyellow;
+
+  box-shadow: inset 2px 2px 0 #fff, inset -2px -2px 0 #66a80f;
 }
 
 .hidden {
@@ -112,6 +115,14 @@ main {
   background-color: transparent;
 
   z-index: -1;
+
+  padding: 3rem;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: orangered;
+  line-height: 2;
+  white-space: pre;
 }
 
 .field {

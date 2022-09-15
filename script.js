@@ -11,7 +11,7 @@ const emoticonSmile = document.querySelector('.emoticon_smile');
 // Funkcja resetująca i odpalająca grę na nowo
 const reset = function () {
   // Reset wskaźnika ilości pozostałych min do znalezienia
-  manyOfFindingMine = 15;
+  manyOfFindingMine = 3;
   findMine.textContent = manyOfFindingMine;
 
   // Reset timera
@@ -35,6 +35,15 @@ const reset = function () {
 
   // Zdjęcie blokady z planszy
   endOfGame.style.zIndex = '-1';
+  endOfGame.style.backgroundColor = 'transparent';
+  endOfGame.textContent = '';
+
+  // Reset winningScore
+  winningScore = 0;
+
+  // Zmiana emoticon
+  emoticonSmile.classList.remove('hidden');
+  emoticonSad.classList.add('hidden');
 };
 
 // manu bar
@@ -42,8 +51,8 @@ const reset = function () {
 // Wskaźnik ilości pozostałych min do znalezienia
 
 const findMine = document.querySelector('.mine');
-
-let manyOfFindingMine = 15;
+// W tym miejscu deklarujemy ile będzie min na planszy
+let manyOfFindingMine = 3;
 
 const createValueOfFindingMine = function (value) {
   // Ilośc min - ilość postawionych znaczniów przez gracza
@@ -97,7 +106,7 @@ const setMineCoords = function () {
 
 // Funkcja tworząca Array z współrzędnymi min
 const setMine = function () {
-  for (let m = 0; m < 15; m++) {
+  for (let m = 0; m < manyOfFindingMine; m++) {
     setMineCoords();
   }
 
@@ -258,6 +267,8 @@ const openField = function (e) {
     }
 };
 
+let winningScore = 0; //Żeby wygrać powinien być równy ilości min
+
 // Prawy przycisk myszy na dane pole - oznaczenie pola z miną
 board.addEventListener('contextmenu', e => markAsMine(e));
 
@@ -265,6 +276,7 @@ const markAsMine = function (e) {
   e.preventDefault();
 
   // Sprawdzenie czy e.target jest polem gry -> zabezpiecznie przed błędem jeśli po zakończeniu gry grać będzie dalej naciskał na pola gry, oraz czy pole nie zostało już odsłonięte
+
   if (
     e.target.classList.contains('field') &&
     fieldWithNeighbours[`${e.target.dataset.coords}`][9] === false
@@ -287,7 +299,29 @@ const markAsMine = function (e) {
       createValueOfFindingMine(1);
 
       fieldWithNeighbours[`${e.target.dataset.coords}`][10] = false;
+
+      console.log(winningScore);
     }
+  }
+  // Sprawdzanie czy zostały zaznaczone wszystkie pola z minami
+  for (let i = 0; i < mineCoords.length; i++) {
+    if (fieldWithNeighbours[mineCoords[i]][10] === true) {
+      winningScore++;
+      console.log(winningScore);
+    }
+  }
+  if (winningScore === mineCoords.length && manyOfFindingMine === 0) {
+    endOfGame.style.zIndex = '99';
+    endOfGame.style.backgroundColor = 'greenyellow';
+    endOfGame.textContent = `WYGRANA!\r\nGratulujemy zwycięstwa!\r\nCzas gry: ${valueOfClock} sekund`;
+    //     WYGRANA!
+    // Gratulujemy zwycięstwa!
+
+    // Czas gry: 148
+    // Twój najlepszy czas w kategorii Początkujący to: 148
+    // Liczba kliknięć: 23
+  } else {
+    winningScore = 0;
   }
 };
 
@@ -295,15 +329,16 @@ emoticonSmile.addEventListener('click', function () {
   emoticonSmile.classList.add('hidden');
   emoticonSad.classList.remove('hidden');
 
-  // Show all mines when clicked reset button
-  mineCoords.forEach(coord => {
-    document.querySelector(`[data-coords="${coord}"]`).style.boxShadow = 'none';
-    document.querySelector(`[data-coords="${coord}"]`).style.backgroundColor =
-      'red';
-  });
+  // // Show all mines when clicked reset button
+  // mineCoords.forEach(coord => {
+  //   document.querySelector(`[data-coords="${coord}"]`).style.boxShadow = 'none';
+  //   document.querySelector(`[data-coords="${coord}"]`).style.backgroundColor =
+  //     'red';
+  // });
 
   // Blocking clickable board
-  endOfGame.style.zIndex = '99';
+  // endOfGame.style.zIndex = '99';
+  reset();
 });
 
 emoticonSad.addEventListener('click', function () {
@@ -317,14 +352,16 @@ emoticonSad.addEventListener('click', function () {
 
 // 1. Komunikat po wygraniu i przegraniu
 
-// 2. reset function która odpali wszystko na początku gry i przy jej zresetowaniu
+// Funkcja init, która odpali wszystko na początku gry
 
-// 3. Dodać timer który liczy czas od momentu naciśnięcia na pierwsze pole, aż do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
-
-// 4. Przycisk do resetowania w miejscu przycisku check - emoticon smile i emoticon sad kiedy gra jest przegrana
+// 3. Dodać timer który  do momentu oznacznia wszystkich min lub do momentu naciśnięcia na minę
 
 // 6. Dorobić grafiki min i znaczników
 
 // 7. Ogarnąć jak dokładnie działa event.preventDefault()
 
 // 8. Stop timer when lost the game
+
+// 9. Logo strony
+
+// 10. Zmienić ilość min na 15
