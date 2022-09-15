@@ -214,6 +214,7 @@ const openField = function (e) {
         if (manyOfMine !== 0) {
           const manyOfMineBox = document.createElement('p');
           manyOfMineBox.textContent = `${manyOfMine}`;
+          manyOfMineBox.classList.add(`many_of_mine_color_${manyOfMine}`);
 
           field.appendChild(manyOfMineBox);
         }
@@ -259,6 +260,9 @@ const openField = function (e) {
             'none';
           document.querySelector(
             `[data-coords="${coord}"]`
+          ).style.backgroundImage = "url('img/mine.png')";
+          document.querySelector(
+            `[data-coords="${coord}"]`
           ).style.backgroundColor = 'red';
         });
 
@@ -290,7 +294,8 @@ const markAsMine = function (e) {
     fieldWithNeighbours[`${e.target.dataset.coords}`][9] === false
   ) {
     if (fieldWithNeighbours[`${e.target.dataset.coords}`][10] === false) {
-      e.target.style.backgroundColor = 'violet';
+      // e.target.style.backgroundColor = 'violet';
+      e.target.style.backgroundImage = "url('img/red-flag.png')";
 
       // Zmiana wyświetlanej liczby min pozostałych do znalezienia
 
@@ -302,7 +307,7 @@ const markAsMine = function (e) {
 
       console.log(e.target);
     } else {
-      e.target.style.backgroundColor = '#ddd';
+      e.target.style.backgroundImage = '';
 
       createValueOfFindingMine(1);
 
@@ -344,10 +349,6 @@ emoticonSad.addEventListener('click', function () {
 
 // //
 
-// 6. Dorobić grafiki min i znaczników
-
-// 7. Ogarnąć jak dokładnie działa event.preventDefault()
-
-// 9. Logo strony
+// 5. Liczby powinny mieć różne kolory w zależności od tego ile min jest w okolicy
 
 // 10. Zmienić ilość min na 15
